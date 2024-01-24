@@ -24,6 +24,7 @@ namespace AgendaLarAPI.Configurations
             });
 
             services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddErrorDescriber<IdentityPortugueseMessages>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
