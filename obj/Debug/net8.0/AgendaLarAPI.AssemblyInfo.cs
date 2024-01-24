@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AgendaLarAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+25017e2300405a711bdecff7045ec03ebb3356c7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0657e372fc83a591c1c9b0c355345531005334a0")]
 [assembly: System.Reflection.AssemblyProductAttribute("AgendaLarAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AgendaLarAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

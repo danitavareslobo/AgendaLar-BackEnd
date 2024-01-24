@@ -1,7 +1,8 @@
-﻿using AgendaLarAPI.Models.User;
-
+﻿using AgendaLarAPI.Configurations;
+using AgendaLarAPI.Models.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace AgendaLarAPI.Controllers
 {
@@ -10,6 +11,18 @@ namespace AgendaLarAPI.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly AppSettings _appSettings;
+
+
+        public AuthController(
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager,
+            IOptions<AppSettings> appSettings)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _appSettings = appSettings.Value;    
+        }
 
         [HttpPost("register")]
         public async Task<ActionResult> Register(UserRegister userRegister)
