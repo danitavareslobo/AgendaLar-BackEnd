@@ -26,6 +26,7 @@ namespace AgendaLarAPI.Data.Repositories
         public async Task<List<Model.Person>> GetPagedAsync(int pageSize, int pageIndex)
         {
             return await _context.Person.AsNoTracking()
+                .Where(p => !p.IsDeleted)
                 .Skip(pageSize * pageIndex)
                 .Take(pageSize)
                 .ToListAsync();

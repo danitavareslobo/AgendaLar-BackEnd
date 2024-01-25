@@ -36,15 +36,14 @@ namespace AgendaLarAPI.Data.Repositories
 
         public async Task<List<Model.Phone>> GetAllAsync()
         {
-            return await _context.Phone
-                .AsNoTracking()
-                .ToListAsync();
+            return await _context.Phone.AsNoTracking().Where(p => !p.IsDeleted).ToListAsync();
         }
 
         public async Task<List<Model.Phone>> GetPagedAsync(int pageSize, int pageIndex)
         {
             return await _context.Phone
                                     .AsNoTracking()
+                                    .Where(p => !p.IsDeleted)
                                     .Skip(pageSize * pageIndex)
                                     .Take(pageSize)
                                     .ToListAsync();
