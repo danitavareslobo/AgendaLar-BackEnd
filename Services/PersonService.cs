@@ -1,82 +1,67 @@
 ﻿using AgendaLarAPI.Data.Repositories.Interfaces;
 using AgendaLarAPI.Services.Interfaces;
-
 using Model = AgendaLarAPI.Models.Person;
 
 namespace AgendaLarAPI.Services
 {
     public class PersonService : IPersonService
     {
-        private readonly IPersonRepository _personRepository;
+        private readonly IPersonRepository _repository;
         private readonly NotificationService _notificationService;
 
         public PersonService(
-            IPersonRepository personRepository,
+            IPersonRepository repository,
             NotificationService notificationService)
         {
-            _personRepository = personRepository;
+            _repository = repository;
             _notificationService = notificationService;
         }
 
-        public Task<Model.Person?> GetByIdAsync(Guid id)
+        public Task<Models.Person.Person?> GetByIdAsync(Guid id)
         {
-            return _personRepository.GetByIdAsync(id);
+            return _repository.GetByIdAsync(id);
         }
 
-        public Task<List<Model.Person>> GetAllAsync()
+        public Task<List<Models.Person.Person>> GetAllAsync()
         {
-            return _personRepository.GetAllAsync();
+            return _repository.GetAllAsync();
         }
 
-        public Task<List<Model.Person>> GetPagedAsync(int pageSize, int pageIndex)
+        public Task<List<Models.Person.Person>> GetPagedAsync(int pageSize, int pageIndex)
         {
-            return _personRepository.GetPagedAsync(pageSize, pageIndex);
+            return _repository.GetPagedAsync(pageSize, pageIndex);
         }
 
-        public async Task<Model.Person?> AddAsync(Model.Person entity)
+        public Task<Models.Person.Person?> AddAsync(Models.Person.Person entity)
         {
-            if (!entity.IsValid)
-            {
-                _notificationService.AddNotifications(entity.ValidationResult);
-                return null;
-            }
-
-            var result = await _personRepository.AddAsync(entity);
-
-            if (result == null || result.Id == Guid.Empty)
-                _notificationService.AddNotification("Person", "Não foi possível adicionar a pessoa");
-
-            return result;
+            return _repository.AddAsync(entity);
         }
 
-        public async Task<Model.Person?> UpdateAsync(Model.Person entity)
+        public Task<Models.Person.Person?> UpdateAsync(Models.Person.Person entity)
         {
-            if (entity.IsValid) return await _personRepository.UpdateAsync(entity);
-
-            _notificationService.AddNotifications(entity.ValidationResult);
-            return null;
+            return _repository.UpdateAsync(entity);
         }
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var person = await _personRepository.GetByIdAsync(id);
+            var phone = await _repository.GetByIdAsync(id);
 
-            if (person == null)
+            if (phone == null)
             {
-                _notificationService.AddNotification("Person", "Não foi possível encontrar a pessoa");
+                _notificationService.AddNotification("Phone", "Não foi possível encontrar a pessoa");
                 return false;
             }
 
-            person.IsDeleted = true;
-            person.IsActive = false;
-            var result = await _personRepository.UpdateAsync(person);
+            phone.IsDeleted = true;
+            phone.IsActive = false;
+            var result = await _repository.UpdateAsync(phone);
 
             return result?.IsDeleted ?? false;
         }
 
         public void Dispose()
         {
-            _personRepository?.Dispose();
+            _repository?.Dispose();
         }
     }
 }
