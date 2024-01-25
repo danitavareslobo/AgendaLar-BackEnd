@@ -1,4 +1,7 @@
 ﻿using AgendaLarAPI.Models.Base;
+using AgendaLarAPI.Models.Person.Validators;
+
+using System.ComponentModel.DataAnnotations;
 
 namespace AgendaLarAPI.Models.Person
 {
@@ -13,5 +16,13 @@ namespace AgendaLarAPI.Models.Person
         public string SocialNumber { get; set; }
         public DateTime BirthDate { get; set; }
         public List<Phone> Phones { get; set; }
+
+        public override bool IsValid => Validate();
+
+        private bool Validate()
+        {
+            Validate(this, new PersonValidator());
+            return ValidationResult.IsValid;
+        }
     }
 }

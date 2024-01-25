@@ -1,4 +1,9 @@
-﻿using System.Net;
+﻿using AgendaLarAPI.Data.Repositories.Interfaces;
+using AgendaLarAPI.Data.Repositories;
+using AgendaLarAPI.Services.Interfaces;
+using AgendaLarAPI.Services;
+
+using System.Net;
 
 namespace AgendaLarAPI.Configurations
 {
@@ -28,6 +33,20 @@ namespace AgendaLarAPI.Configurations
             services.AddEndpointsApiExplorer();
 
             return services;
+        }
+
+        private static IServiceCollection RegisterServices(this IServiceCollection services)
+        {
+            services.AddScoped<NotificationService>();
+            services.AddScoped<NotificationService>();
+            services.AddScoped<IPersonService, PersonService>();
+            return services;
+        }
+
+        private static void RegisterRepositories(this IServiceCollection services)
+        {
+            services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IPhoneRepository, PhoneRepository>();
         }
 
         public static WebApplication UseApiConfiguration(this WebApplication app)
