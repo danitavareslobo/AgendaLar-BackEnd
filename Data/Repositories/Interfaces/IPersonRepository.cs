@@ -1,6 +1,6 @@
 ﻿namespace AgendaLarAPI.Data.Repositories.Interfaces
 {
-    public interface IPersonRepository : IRepository<Models.Person.Person>
+    public interface IPersonRepository : IRepository<Model.Person>
     {
     }
 }
