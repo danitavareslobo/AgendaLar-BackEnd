@@ -1,12 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc;
+using AgendaLarAPI.Models.Notification;
+using AgendaLarAPI.Services;
 
 namespace AgendaLarAPI.Controllers.Base
 {
     [ApiController]
     public class DefaultController : ControllerBase
     {
-        protected ICollection<string> Errors = new List<string>();
+        private readonly NotificationService _notificationService;
+
+        public DefaultController(NotificationService notificationService)
+        {
+            _notificationService = notificationService;
+        }
 
         protected ActionResult CustomResponse(object? result = null)
         {
@@ -21,15 +28,15 @@ namespace AgendaLarAPI.Controllers.Base
 
             return BadRequest(new ValidationProblemDetails(
                 new Dictionary<string, string[]>
-                {
-                { "Mensagens", GetErrors() }
-                })
+            {
+            { "Mensagens", GetErros() }
+            })
             {
                 Title = "Ocorreu um ou mais erros de validação."
             });
         }
 
-        private string[] GetErrors()
+        private string[] GetErros()
         {
             var errors = ModelState.Values.SelectMany(v => v.Errors);
             foreach (var error in errors)
@@ -38,7 +45,7 @@ namespace AgendaLarAPI.Controllers.Base
                 NotifyError(errorMsg);
             }
 
-            return Errors.ToArray();
+            return _notificationService.Notifications.Select(n => n.Message).ToArray();
         }
 
         protected ActionResult CustomResponse(ModelStateDictionary modelState)
@@ -50,7 +57,7 @@ namespace AgendaLarAPI.Controllers.Base
         protected bool ValidOperation()
         {
             return !ModelState.Values.Any(v => v.Errors.Count > 0) &&
-                   !Errors.Any();
+                   _notificationService.HasNotifications;
         }
 
         protected void NotifyErrorModelInvalid(ModelStateDictionary modelState)
@@ -63,9 +70,9 @@ namespace AgendaLarAPI.Controllers.Base
             }
         }
 
-        protected void NotifyError(string mensagem)
+        protected void NotifyError(string mensagem, string title = "Ocorreu um erro.")
         {
-            Errors.Add(mensagem);
+            _notificationService.AddNotification(title, mensagem, NotificationType.Error);
         }
     }
 }

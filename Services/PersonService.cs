@@ -1,19 +1,21 @@
 ﻿using AgendaLarAPI.Data.Repositories.Interfaces;
 using AgendaLarAPI.Services.Interfaces;
 
+using Model = AgendaLarAPI.Models.Person;
+
 namespace AgendaLarAPI.Services
 {
     public class PersonService : IPersonService
     {
         private readonly IPersonRepository _personRepository;
-        private readonly NotificationContext _notificationContext;
+        private readonly NotificationService _notificationService;
 
         public PersonService(
             IPersonRepository personRepository,
-            NotificationContext notificationContext)
+            NotificationService notificationService)
         {
             _personRepository = personRepository;
-            _notificationContext = notificationContext;
+            _notificationService = notificationService;
         }
 
         public Task<Model.Person?> GetByIdAsync(Guid id)
@@ -35,14 +37,14 @@ namespace AgendaLarAPI.Services
         {
             if (!entity.IsValid)
             {
-                _notificationContext.AddNotifications(entity.ValidationResult);
+                _notificationService.AddNotifications(entity.ValidationResult);
                 return null;
             }
 
             var result = await _personRepository.AddAsync(entity);
 
             if (result == null || result.Id == Guid.Empty)
-                _notificationContext.AddNotification("Person", "Não foi possível adicionar a pessoa");
+                _notificationService.AddNotification("Person", "Não foi possível adicionar a pessoa");
 
             return result;
         }
@@ -51,23 +53,23 @@ namespace AgendaLarAPI.Services
         {
             if (entity.IsValid) return await _personRepository.UpdateAsync(entity);
 
-            _notificationContext.AddNotifications(entity.ValidationResult);
+            _notificationService.AddNotifications(entity.ValidationResult);
             return null;
         }
 
-        public async Task<bool> DeleteAsync(Model.Person entity)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            var person = await _personRepository.GetByIdAsync(entity.Id);
+            var person = await _personRepository.GetByIdAsync(id);
 
             if (person == null)
             {
-                _notificationContext.AddNotification("Person", "Não foi possível encontrar a pessoa");
+                _notificationService.AddNotification("Person", "Não foi possível encontrar a pessoa");
                 return false;
             }
 
-            entity.IsDeleted = true;
-            entity.IsActive = false;
-            var result = await _personRepository.UpdateAsync(entity);
+            person.IsDeleted = true;
+            person.IsActive = false;
+            var result = await _personRepository.UpdateAsync(person);
 
             return result?.IsDeleted ?? false;
         }

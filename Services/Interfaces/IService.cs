@@ -9,6 +9,6 @@ namespace AgendaLarAPI.Services.Interfaces
         Task<List<T>> GetPagedAsync(int pageSize, int pageIndex);
         Task<T?> AddAsync(T entity);
         Task<T?> UpdateAsync(T entity);
-        Task<bool> DeleteAsync(T entity);
+        Task<bool> DeleteAsync(Guid entity);
     }
 }

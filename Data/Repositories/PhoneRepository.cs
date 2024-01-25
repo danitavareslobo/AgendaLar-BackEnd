@@ -1,5 +1,6 @@
 ﻿using AgendaLarAPI.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Model = AgendaLarAPI.Models.Person;
 
 namespace AgendaLarAPI.Data.Repositories
 {

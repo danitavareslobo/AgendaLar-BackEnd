@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using Model = AgendaLarAPI.Models.Person;
 
 namespace AgendaLarAPI.Data.Configurations
 {

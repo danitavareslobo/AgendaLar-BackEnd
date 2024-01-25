@@ -1,4 +1,6 @@
 ﻿using AgendaLarAPI.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Model = AgendaLarAPI.Models.Person;
 
 namespace AgendaLarAPI.Data.Repositories
 {
@@ -18,7 +20,7 @@ namespace AgendaLarAPI.Data.Repositories
 
         public async Task<List<Model.Person>> GetAllAsync()
         {
-            return await _context.Person.AsNoTracking().ToListAsync();
+            return await _context.Person.AsNoTracking().Where(p => !p.IsDeleted).ToListAsync();
         }
 
         public async Task<List<Model.Person>> GetPagedAsync(int pageSize, int pageIndex)
