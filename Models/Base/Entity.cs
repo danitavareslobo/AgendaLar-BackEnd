@@ -1,4 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FluentValidation;
+using FluentValidation.Results;
+
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AgendaLarAPI.Models.Base
 {
@@ -14,12 +18,24 @@ namespace AgendaLarAPI.Models.Base
         }
 
         public Guid Id { get; set; }
+
+        [JsonIgnore]
         public DateTime CreatedAt { get; set; }
+
+        [JsonIgnore]
         public DateTime UpdatedAt { get; set; }
+
+        [JsonIgnore]
         public bool IsActive { get; set; }
+
+        [JsonIgnore]
         public bool IsDeleted { get; set; }
 
+        [NotMapped]
         public abstract bool IsValid { get; }
+
+        [JsonIgnore]
+        [NotMapped]
         public ValidationResult ValidationResult { get; private set; }
 
         protected void Validate<TModel>(TModel model, AbstractValidator<TModel> validator)
@@ -28,3 +44,4 @@ namespace AgendaLarAPI.Models.Base
         }
     }
 }
+

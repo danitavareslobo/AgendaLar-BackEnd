@@ -1,9 +1,13 @@
-﻿using System.Text.Json.Serialization;
+﻿using AgendaLarAPI.Extensions;
+
+using System.Text.Json.Serialization;
 
 namespace AgendaLarAPI.Models.Notification
 {
     public class Notification
     {
+        public Notification() { }
+
         public Notification(string key, string message, NotificationType type = NotificationType.Information)
         {
             Key = key;

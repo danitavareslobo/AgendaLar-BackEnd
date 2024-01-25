@@ -1,4 +1,6 @@
-﻿namespace AgendaLarAPI.Models.Person.Validators
+﻿using FluentValidation;
+
+namespace AgendaLarAPI.Models.Person.Validators
 {
     public class PersonValidator : AbstractValidator<Person>
     {

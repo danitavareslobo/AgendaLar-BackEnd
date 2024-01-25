@@ -1,14 +1,17 @@
 ﻿using AgendaLarAPI.Models.Base;
 using AgendaLarAPI.Models.Person.Validators;
 
-using System.ComponentModel.DataAnnotations;
+using FluentValidation.Results;
 
 namespace AgendaLarAPI.Models.Person
 {
     public class Person : Entity
     {
+        public const int NameMinLength = 5;
         public const int NameMaxLength = 100;
+        public const int EmailMinLength = 5;
         public const int EmailMaxLength = 100;
+        public const int SocialNumberMinLength = 11;
         public const int SocialNumberMaxLength = 18;
 
         public string Name { get; set; }

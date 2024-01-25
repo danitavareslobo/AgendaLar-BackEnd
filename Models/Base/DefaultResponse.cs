@@ -1,5 +1,6 @@
 ﻿using AgendaLarAPI.Models.Notification;
 using System.Text.Json.Serialization;
+using Model = AgendaLarAPI.Models.Notification;
 
 namespace AgendaLarAPI.Models.Base
 {
@@ -10,7 +11,7 @@ namespace AgendaLarAPI.Models.Base
 
         }
 
-        public DefaultResponse(ICollection<Notification> notifications)
+        public DefaultResponse(ICollection<Model.Notification> notifications)
         {
             var isValid = notifications.Count(a => a.Type == NotificationType.Information) == notifications.Count;
             Success = notifications.Count == 0 || isValid;

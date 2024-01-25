@@ -1,5 +1,6 @@
-﻿using AgendaLarAPI.Models.Notification;
-using System.ComponentModel.DataAnnotations;
+﻿using FluentValidation.Results;
+
+using AgendaLarAPI.Models.Notification;
 
 namespace AgendaLarAPI.Services
 {

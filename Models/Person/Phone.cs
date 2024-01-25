@@ -1,6 +1,5 @@
 ﻿using AgendaLarAPI.Models.Base;
 using AgendaLarAPI.Models.Person.Validators;
-using Model = AgendaLarAPI.Models.Person;
 
 namespace AgendaLarAPI.Models.Person
 {

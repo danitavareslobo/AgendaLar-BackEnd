@@ -1,6 +1,8 @@
 ﻿using AgendaLarAPI.Data.Repositories.Interfaces;
 using AgendaLarAPI.Services.Interfaces;
 
+using Model = AgendaLarAPI.Models.Person;
+
 namespace AgendaLarAPI.Services
 {
     public class PhoneService : IPhoneService
