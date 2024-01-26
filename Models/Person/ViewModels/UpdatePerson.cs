@@ -22,7 +22,10 @@ namespace AgendaLarAPI.Models.Person.ViewModels
         [JsonPropertyName("ativo")]
         public bool Ativo { get; set; }
 
-        [JsonPropertyName("telefones")]
-        public List<CreatePhone> Phones { get; set; } = new List<CreatePhone>();
+        [JsonPropertyName("telefones-novos")]
+        public List<CreatePhone> NewPhones { get; set; } = new List<CreatePhone>();
+
+        [JsonPropertyName("telefones-atualizados")]
+        public List<UpdatePhone> UpdatedPhones { get; set; } = new List<UpdatePhone>();
     }
 }

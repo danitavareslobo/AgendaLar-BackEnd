@@ -44,7 +44,7 @@ namespace AgendaLarAPI.Services
             var result = await _phoneRepository.AddAsync(entity);
 
             if (result == null || result.Id == Guid.Empty)
-                _notificationService.AddNotification("Phone", "Não foi possível adicionar a pessoa");
+                _notificationService.AddNotification("Telefone", "Não foi possível adicionar o telefone");
 
             return result;
         }
@@ -63,7 +63,7 @@ namespace AgendaLarAPI.Services
 
             if (phone == null)
             {
-                _notificationService.AddNotification("Phone", "Não foi possível encontrar a pessoa");
+                _notificationService.AddNotification("Phone", "Não foi possível encontrar o telefone");
                 return false;
             }
 

@@ -38,8 +38,8 @@ namespace AgendaLarAPI.Configurations
         private static IServiceCollection RegisterServices(this IServiceCollection services)
         {
             services.AddScoped<NotificationService>();
-            services.AddScoped<NotificationService>();
             services.AddScoped<IPersonService, PersonService>();
+            services.AddScoped<IPhoneService, PhoneService>();
             return services;
         }
 
@@ -52,8 +52,8 @@ namespace AgendaLarAPI.Configurations
         public static WebApplication UseApiConfiguration(this WebApplication app)
         {
             app.UseHttpsRedirection();
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
             app.MapControllers();
 
             return app;

@@ -17,6 +17,6 @@ namespace AgendaLarAPI.Models.Person.ViewModels
         public DateTime BirthDate { get; set; }
 
         [JsonPropertyName("telefones")]
-        public List<CreatePhone> Phones { get; set; } = new List<CreatePhone>();
+        public List<CreatePhone>? Phones { get; set; } = new List<CreatePhone>();
     }
 }

@@ -57,7 +57,7 @@ namespace AgendaLarAPI.Controllers.Base
         protected bool ValidOperation()
         {
             return !ModelState.Values.Any(v => v.Errors.Count > 0) &&
-                   _notificationService.HasNotifications;
+                   !_notificationService.HasNotifications;
         }
 
         protected void NotifyErrorModelInvalid(ModelStateDictionary modelState)

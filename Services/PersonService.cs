@@ -32,14 +32,40 @@ namespace AgendaLarAPI.Services
             return _repository.GetPagedAsync(pageSize, pageIndex);
         }
 
-        public Task<Models.Person.Person?> AddAsync(Models.Person.Person entity)
+        public async Task<Models.Person.Person?> AddAsync(Models.Person.Person entity)
         {
-            return _repository.AddAsync(entity);
+            if (!entity.IsValid)
+            {
+                _notificationService.AddNotifications(entity.ValidationResult);
+                return null;
+            }
+
+            var result = await _repository.AddAsync(entity);
+
+            if (result == null || result.Id == Guid.Empty)
+            {
+                _notificationService.AddNotification("Pessoa", "Não foi possível adicionar a pessoa");
+            }
+
+            return result;
         }
 
-        public Task<Models.Person.Person?> UpdateAsync(Models.Person.Person entity)
+        public async Task<Models.Person.Person?> UpdateAsync(Models.Person.Person entity)
         {
-            return _repository.UpdateAsync(entity);
+            if (!entity.IsValid)
+            {
+                _notificationService.AddNotifications(entity.ValidationResult);
+                return null;
+            }
+
+            var result = await _repository.UpdateAsync(entity);
+
+            if (result == null || result.Id == Guid.Empty)
+            {
+                _notificationService.AddNotification("Pessoa", "Não foi possível adicionar a pessoa");
+            }
+
+            return result;
         }
 
         public async Task<bool> DeleteAsync(Guid id)
@@ -48,7 +74,7 @@ namespace AgendaLarAPI.Services
 
             if (phone == null)
             {
-                _notificationService.AddNotification("Phone", "Não foi possível encontrar a pessoa");
+                _notificationService.AddNotification("Pessoa", "Não foi possível encontrar a pessoa");
                 return false;
             }
 
@@ -64,4 +90,5 @@ namespace AgendaLarAPI.Services
             _repository?.Dispose();
         }
     }
+
 }

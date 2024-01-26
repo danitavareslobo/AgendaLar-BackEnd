@@ -1,4 +1,5 @@
 ﻿using AgendaLarAPI.Controllers.Base;
+using AgendaLarAPI.Models;
 using AgendaLarAPI.Models.Person;
 using AgendaLarAPI.Models.Person.ViewModels;
 using AgendaLarAPI.Services;
@@ -10,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AgendaLarAPI.Controllers
 {
     [Route("api/pessoas")]
-    [Authorize]
+    [Authorize(Roles = AgendaConstants.AdminRole)]
     public class PersonController : DefaultController
     {
         private readonly IPersonService _service;
@@ -35,7 +36,7 @@ namespace AgendaLarAPI.Controllers
         [HttpGet("paged")]
         public async Task<IActionResult> GetPaged(int pageSize, int pageIndex)
         {
-            return CustomResponse(await _service.GetPagedAsync(pageSize, pageIndex));
+            return CustomResponse(_mapper.Map<List<PersonResponse>>(await _service.GetPagedAsync(pageSize, pageIndex)));
         }
 
         [HttpGet("{id:guid}")]
@@ -47,13 +48,13 @@ namespace AgendaLarAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CreatePerson person)
         {
-            return CustomResponse(_mapper.Map<List<PersonResponse>>(await _service.AddAsync(_mapper.Map<Person>(person))));
+            return CustomResponse(_mapper.Map<PersonResponse>(await _service.AddAsync(_mapper.Map<Person>(person))));
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(Person person)
         {
-            return CustomResponse(await _service.UpdateAsync(_mapper.Map<Person>(person)));
+            return CustomResponse(_mapper.Map<PersonResponse>(await _service.UpdateAsync(_mapper.Map<Person>(person))));
         }
 
         [HttpDelete("{id:guid}")]

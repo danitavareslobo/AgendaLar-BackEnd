@@ -1,5 +1,6 @@
 ﻿using AgendaLarAPI.Configurations;
 using AgendaLarAPI.Controllers.Base;
+using AgendaLarAPI.Models;
 using AgendaLarAPI.Models.User;
 using AgendaLarAPI.Services;
 
@@ -18,10 +19,12 @@ namespace AgendaLarAPI.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly AppSettings _appSettings;
 
         public AuthController(
             UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager,
             SignInManager<IdentityUser> signInManager,
             NotificationService notificationService,
             IOptions<AppSettings> appSettings)
@@ -29,6 +32,7 @@ namespace AgendaLarAPI.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _appSettings = appSettings.Value;
         }
 
@@ -46,6 +50,11 @@ namespace AgendaLarAPI.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, userRegister.Password);
+
+            if (!await _roleManager.RoleExistsAsync(AgendaConstants.AdminRole))
+                await _roleManager.CreateAsync(new IdentityRole(AgendaConstants.AdminRole));
+
+            await _userManager.AddToRoleAsync(user, AgendaConstants.AdminRole);
 
             if (result.Succeeded) return CustomResponse(await GenerateJwt(userRegister.Email));
 

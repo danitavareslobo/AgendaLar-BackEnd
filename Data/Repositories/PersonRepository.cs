@@ -15,17 +15,24 @@ namespace AgendaLarAPI.Data.Repositories
 
         public async Task<Model.Person?> GetByIdAsync(Guid id)
         {
-            return await _context.Person.FindAsync(id);
+            return await _context.Person
+            .Include(p => p.Phones)
+            .FirstAsync(p => p.Id.Equals(id));
         }
 
         public async Task<List<Model.Person>> GetAllAsync()
         {
-            return await _context.Person.AsNoTracking().Where(p => !p.IsDeleted).ToListAsync();
+            return await _context.Person
+            .AsNoTracking()
+            .Include(p => p.Phones)
+            .Where(p => !p.IsDeleted)
+            .ToListAsync();
         }
 
         public async Task<List<Model.Person>> GetPagedAsync(int pageSize, int pageIndex)
         {
             return await _context.Person.AsNoTracking()
+                .Include(p => p.Phones)
                 .Where(p => !p.IsDeleted)
                 .Skip(pageSize * pageIndex)
                 .Take(pageSize)
