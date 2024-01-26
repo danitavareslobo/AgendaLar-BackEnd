@@ -1,6 +1,8 @@
 ﻿using AgendaLarAPI.Models.Person.ViewModels;
 using AutoMapper;
 
+using Model = AgendaLarAPI.Models.Person;
+
 namespace AgendaLarAPI.Mappers.Person
 {
     public class UpdatePersonProfile : Profile

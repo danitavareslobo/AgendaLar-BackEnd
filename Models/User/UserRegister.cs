@@ -26,5 +26,12 @@ namespace AgendaLarAPI.Models.User
         [Compare("Password", ErrorMessage = "The password must match.")]
         [Display(Name = "Confirmação de senha")]
         public string ConfirmPassword { get; set; }
+
+        public bool IsValid => !string.IsNullOrEmpty(Name)
+                           && !string.IsNullOrEmpty(SocialNumber)
+                           && !string.IsNullOrEmpty(Email)
+                           && !string.IsNullOrEmpty(Password)
+                           && !string.IsNullOrEmpty(ConfirmPassword)
+                           && Password == ConfirmPassword;
     }
 }

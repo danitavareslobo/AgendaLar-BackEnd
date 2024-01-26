@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AgendaLarAPI.Extensions;
+
+using System.ComponentModel.DataAnnotations;
 
 namespace AgendaLarAPI.Models.User
 {
@@ -14,6 +16,13 @@ namespace AgendaLarAPI.Models.User
         [Display(Name = "Senha")]
         [StringLength(100, ErrorMessage = "O campo {0} deve ter entre {2} e {1} caracteres", MinimumLength = 6)]
         public string Password { get; set; }
+
+        public bool IsEmpty => string.IsNullOrEmpty(Email)
+                           || string.IsNullOrEmpty(Password);
+
+        public bool IsValidEmail => Email.IsValidEmail();
+
+        public bool IsValidPassword => Password.IsValidPassword();
     }
 
 }

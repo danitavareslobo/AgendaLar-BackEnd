@@ -29,6 +29,11 @@ namespace AgendaLarAPI.Services
             Notifications.Clear();
         }
 
+        public void AddNotifications(IEnumerable<Notification> erros)
+        {
+            Notifications.AddRange(erros);
+        }
+
         public void AddNotifications(ValidationResult validationResult)
         {
             foreach (var error in validationResult.Errors)
