@@ -1,8 +1,10 @@
 ﻿using AgendaLarAPI.Configurations;
 using AgendaLarAPI.Controllers.Base;
 using AgendaLarAPI.Models;
+using AgendaLarAPI.Models.Person;
 using AgendaLarAPI.Models.User;
 using AgendaLarAPI.Services;
+using AgendaLarAPI.Services.Interfaces;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +22,14 @@ namespace AgendaLarAPI.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IPersonService _personService;
         private readonly AppSettings _appSettings;
 
         public AuthController(
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<IdentityUser> signInManager,
+            IPersonService personService,
             NotificationService notificationService,
             IOptions<AppSettings> appSettings)
             : base(notificationService)
@@ -49,12 +53,7 @@ namespace AgendaLarAPI.Controllers
                 EmailConfirmed = true
             };
 
-            var result = await _userManager.CreateAsync(user, userRegister.Password);
-
-            if (!await _roleManager.RoleExistsAsync(AgendaConstants.AdminRole))
-                await _roleManager.CreateAsync(new IdentityRole(AgendaConstants.AdminRole));
-
-            await _userManager.AddToRoleAsync(user, AgendaConstants.AdminRole);
+            var result = await CreateUserAsync(userRegister, user);
 
             if (result.Succeeded) return CustomResponse(await GenerateJwt(userRegister.Email));
 
@@ -161,6 +160,24 @@ namespace AgendaLarAPI.Controllers
                 identityClaims.AddClaim(new Claim("role", role));
 
             return identityClaims;
+        }
+
+        private async Task<IdentityResult> CreateUserAsync(UserRegister userRegister, IdentityUser user)
+        {
+            var result = await _userManager.CreateAsync(user, userRegister.Password);
+
+            if (!await _roleManager.RoleExistsAsync(AgendaConstants.AdminRole))
+                await _roleManager.CreateAsync(new IdentityRole(AgendaConstants.AdminRole));
+
+            await _userManager.AddToRoleAsync(user, AgendaConstants.AdminRole);
+            await _personService.AddAsync(new Person
+            {
+                Name = userRegister.Name,
+                Email = userRegister.Email,
+                SocialNumber = userRegister.SocialNumber,
+                BirthDate = DateTime.Now.AddYears(-18),
+            });
+            return result;
         }
     }
 }
