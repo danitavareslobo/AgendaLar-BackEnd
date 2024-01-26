@@ -40,6 +40,7 @@ namespace AgendaLarAPI.Configurations
             services.AddScoped<NotificationService>();
             services.AddScoped<IPersonService, PersonService>();
             services.AddScoped<IPhoneService, PhoneService>();
+            services.AddScoped<IAuthService, AuthService>();
             return services;
         }
 

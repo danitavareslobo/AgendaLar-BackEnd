@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using AgendaLarAPI.Models.Notification;
 using AgendaLarAPI.Services;
+using AgendaLarAPI.Extensions;
+using AgendaLarAPI.Models;
 
 namespace AgendaLarAPI.Controllers.Base
 {
@@ -70,9 +72,26 @@ namespace AgendaLarAPI.Controllers.Base
             }
         }
 
-        protected void NotifyError(string mensagem, string title = "Ocorreu um erro.")
+        protected void NotifyError(string mensagem, string title = "Ocorreu um erro.", NotificationType type = NotificationType.Error)
         {
             _notificationService.AddNotification(title, mensagem, NotificationType.Error);
+            _notificationService.AddNotification(title, mensagem, type);
+        }
+
+        protected string LoggedUserId => GetLoggedUserId();
+
+        private string GetLoggedUserId()
+        {
+            var claim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == AgendaConstants.NameIdentifierClaimType);
+            var userId = claim?.Value;
+
+            if (!string.IsNullOrWhiteSpace(userId)) return userId;
+
+            NotifyError(
+                NotificationType.Unauthorized.GetEnumDescription(),
+                "Usuário não autenticado.",
+                NotificationType.Unauthorized);
+            return string.Empty;
         }
     }
 }
