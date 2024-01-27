@@ -1,4 +1,4 @@
-﻿using AgendaLarAPI.Models.User;
+﻿using AgendaLarAPI.Models.User.ViewModels;
 
 namespace AgendaLarAPI.Services.Interfaces
 {

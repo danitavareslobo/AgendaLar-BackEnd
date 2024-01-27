@@ -1,7 +1,7 @@
-﻿using AgendaLarAPI.Models.Person.ViewModels;
+﻿using AgendaLarAPI.Models.People.ViewModels;
 using AutoMapper;
 
-using Model = AgendaLarAPI.Models.Person;
+using Model = AgendaLarAPI.Models.People;
 
 namespace AgendaLarAPI.Mappers.Person
 {
@@ -11,6 +11,7 @@ namespace AgendaLarAPI.Mappers.Person
         {
             CreateMap<Model.Person, PersonResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.SocialNumber, opt => opt.MapFrom(src => src.SocialNumber))
@@ -20,6 +21,7 @@ namespace AgendaLarAPI.Mappers.Person
 
             CreateMap<PersonResponse, Model.Person>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.SocialNumber, opt => opt.MapFrom(src => src.SocialNumber))

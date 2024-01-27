@@ -1,7 +1,7 @@
-﻿using AgendaLarAPI.Models.Person.ViewModels;
+﻿using AgendaLarAPI.Models.People.ViewModels;
 using AutoMapper;
 
-using Model = AgendaLarAPI.Models.Person;
+using Model = AgendaLarAPI.Models.People;
 
 namespace AgendaLarAPI.Mappers.Person
 {

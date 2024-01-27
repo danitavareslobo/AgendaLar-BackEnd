@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace AgendaLarAPI.Models.Person.Validators
+namespace AgendaLarAPI.Models.People.Validators
 {
     public class PhoneValidator : AbstractValidator<Phone>
     {

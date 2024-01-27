@@ -10,22 +10,25 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AgendaLarAPI.Extensions;
+using AgendaLarAPI.Models.User.ViewModels;
+
+using Model = AgendaLarAPI.Models.People;
 
 namespace AgendaLarAPI.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly IPersonService _personService;
         private readonly NotificationService _notificationService;
         private readonly AppSettings _appSettings;
 
         public AuthService(
-            UserManager<IdentityUser> userManager,
+            UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager,
-            SignInManager<IdentityUser> signInManager,
+            SignInManager<User> signInManager,
             IPersonService personService,
             NotificationService notificationService,
             IOptions<AppSettings> appSettings)
@@ -46,7 +49,7 @@ namespace AgendaLarAPI.Services
                 return null;
             }
 
-            var user = new IdentityUser
+            var user = new User
             {
                 UserName = userRegister.Email,
                 Email = userRegister.Email,
@@ -132,7 +135,7 @@ namespace AgendaLarAPI.Services
             return tokenHandler.WriteToken(token);
         }
 
-        private async Task<ClaimsIdentity> GetIdentityClaims(IdentityUser user)
+        private async Task<ClaimsIdentity> GetIdentityClaims(User user)
         {
             var roles = await _userManager.GetRolesAsync(user);
             var claims = await _userManager.GetClaimsAsync(user);
@@ -149,20 +152,24 @@ namespace AgendaLarAPI.Services
             return identityClaims;
         }
 
-        private async Task<IdentityResult> CreateUserAsync(UserRegister userRegister, IdentityUser user)
+        private async Task<IdentityResult> CreateUserAsync(UserRegister userRegister, User user)
         {
             var result = await _userManager.CreateAsync(user, userRegister.Password);
 
+            if(!result.Succeeded) 
+                return result;
+            
             if (!await _roleManager.RoleExistsAsync(AgendaConstants.AdminRole))
                 await _roleManager.CreateAsync(new IdentityRole(AgendaConstants.AdminRole));
 
             await _userManager.AddToRoleAsync(user, AgendaConstants.AdminRole);
-            await _personService.AddAsync(new Models.Person.Person
+            await _personService.AddAsync(new Model.Person
             {
                 Name = userRegister.Name,
                 Email = userRegister.Email,
                 SocialNumber = userRegister.SocialNumber,
                 BirthDate = DateTime.Now.AddYears(-18),
+                UserId = user.Id
             });
             return result;
         }

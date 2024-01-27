@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Model = AgendaLarAPI.Models.Person;
+using Model = AgendaLarAPI.Models.People;
 
 namespace AgendaLarAPI.Data.Configurations
 {
@@ -11,6 +11,10 @@ namespace AgendaLarAPI.Data.Configurations
             builder.ToTable("Phones");
 
             builder.HasKey(p => p.Id);
+
+            builder.Property(p => p.UserId)
+                .IsRequired()
+                .HasColumnType("nvarchar(450)");
 
             builder.Property(p => p.CreatedAt)
                 .IsRequired()
@@ -39,6 +43,11 @@ namespace AgendaLarAPI.Data.Configurations
             builder.HasOne(p => p.Person)
                 .WithMany(p => p.Phones)
                 .HasForeignKey(p => p.PersonId);
+
+            builder.HasOne(p => p.User)
+                .WithMany(p => p.Phones)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

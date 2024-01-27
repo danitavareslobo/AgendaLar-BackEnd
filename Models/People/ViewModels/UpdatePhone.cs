@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AgendaLarAPI.Models.Person.ViewModels
+namespace AgendaLarAPI.Models.People.ViewModels
 {
     public class UpdatePhone
     {

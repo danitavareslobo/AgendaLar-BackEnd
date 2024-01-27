@@ -1,9 +1,9 @@
 ﻿using AgendaLarAPI.Models.Base;
-using AgendaLarAPI.Models.Person.Validators;
-
+using AgendaLarAPI.Models.People.Validators;
+using Model = AgendaLarAPI.Models.User;
 using FluentValidation.Results;
 
-namespace AgendaLarAPI.Models.Person
+namespace AgendaLarAPI.Models.People
 {
     public class Person : Entity
     {
@@ -19,6 +19,7 @@ namespace AgendaLarAPI.Models.Person
         public string SocialNumber { get; set; }
         public DateTime BirthDate { get; set; }
         public List<Phone> Phones { get; set; }
+        public Model.User User { get; set; }
 
         public override bool IsValid => Validate();
 

@@ -18,6 +18,7 @@ namespace AgendaLarAPI.Models.Base
         }
 
         public Guid Id { get; set; }
+        public string UserId { get; set; }
 
         [JsonIgnore]
         public DateTime CreatedAt { get; set; }

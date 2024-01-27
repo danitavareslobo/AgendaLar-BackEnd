@@ -1,6 +1,6 @@
 ﻿using AgendaLarAPI.Data.Repositories.Interfaces;
 using AgendaLarAPI.Services.Interfaces;
-using Model = AgendaLarAPI.Models.Person;
+using Model = AgendaLarAPI.Models.People;
 
 namespace AgendaLarAPI.Services
 {
@@ -17,22 +17,22 @@ namespace AgendaLarAPI.Services
             _notificationService = notificationService;
         }
 
-        public Task<Models.Person.Person?> GetByIdAsync(Guid id)
+        public Task<Models.People.Person?> GetByIdAsync(string loggedUserId, Guid id)
         {
-            return _repository.GetByIdAsync(id);
+            return _repository.GetByIdAsync(loggedUserId, id);
         }
 
-        public Task<List<Models.Person.Person>> GetAllAsync()
+        public Task<List<Models.People.Person>> GetAllAsync(string loggedUserId)
         {
-            return _repository.GetAllAsync();
+            return _repository.GetAllAsync(loggedUserId);
         }
 
-        public Task<List<Models.Person.Person>> GetPagedAsync(int pageSize, int pageIndex)
+        public Task<List<Models.People.Person>> GetPagedAsync(string loggedUserId, int pageSize, int pageIndex)
         {
-            return _repository.GetPagedAsync(pageSize, pageIndex);
+            return _repository.GetPagedAsync(loggedUserId, pageSize, pageIndex);
         }
 
-        public async Task<Models.Person.Person?> AddAsync(Models.Person.Person entity)
+        public async Task<Models.People.Person?> AddAsync(Models.People.Person entity)
         {
             if (!entity.IsValid)
             {
@@ -50,7 +50,7 @@ namespace AgendaLarAPI.Services
             return result;
         }
 
-        public async Task<Models.Person.Person?> UpdateAsync(Models.Person.Person entity)
+        public async Task<Models.People.Person?> UpdateAsync(Models.People.Person entity)
         {
             if (!entity.IsValid)
             {
@@ -68,9 +68,9 @@ namespace AgendaLarAPI.Services
             return result;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(string loggedUserId, Guid id)
         {
-            var phone = await _repository.GetByIdAsync(id);
+            var phone = await _repository.GetByIdAsync(loggedUserId, id);
 
             if (phone == null)
             {
@@ -90,5 +90,4 @@ namespace AgendaLarAPI.Services
             _repository?.Dispose();
         }
     }
-
 }

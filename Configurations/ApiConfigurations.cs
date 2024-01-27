@@ -15,6 +15,10 @@ namespace AgendaLarAPI.Configurations
             services.Configure<AppSettings>(appSettings);
             services.AddRouting(route => route.LowercaseUrls = true);
             services.AddControllers();
+            services.AddAutoMapperConfiguration();
+            services.ConfigureIdentity(configuration);
+            services.RegisterServices();
+            services.RegisterRepositories();
             services.AddProblemDetails(options =>
             {
                 options.CustomizeProblemDetails = (context) =>

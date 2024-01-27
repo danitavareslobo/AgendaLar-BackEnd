@@ -1,4 +1,5 @@
 ﻿using AgendaLarAPI.Data;
+using AgendaLarAPI.Models.User;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -23,7 +24,7 @@ namespace AgendaLarAPI.Configurations
                 options.UseSqlServer(appSettings.ConnectionString);
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>()
                 .AddErrorDescriber<IdentityPortugueseMessages>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();

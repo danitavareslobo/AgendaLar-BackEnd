@@ -1,6 +1,6 @@
 ﻿using AgendaLarAPI.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Model = AgendaLarAPI.Models.Person;
+using Model = AgendaLarAPI.Models.People;
 
 namespace AgendaLarAPI.Data.Repositories
 {
@@ -13,27 +13,30 @@ namespace AgendaLarAPI.Data.Repositories
             _context = context;
         }
 
-        public async Task<Model.Person?> GetByIdAsync(Guid id)
+        public async Task<Model.Person?> GetByIdAsync(string loggedUserId, Guid id)
         {
             return await _context.Person
-            .Include(p => p.Phones)
-            .FirstAsync(p => p.Id.Equals(id));
+                .Include(p => p.Phones)
+                .FirstAsync(p => p.Id.Equals(id)
+                                 && p.UserId == loggedUserId);
         }
 
-        public async Task<List<Model.Person>> GetAllAsync()
+        public async Task<List<Model.Person>> GetAllAsync(string loggedUserId)
         {
             return await _context.Person
-            .AsNoTracking()
-            .Include(p => p.Phones)
-            .Where(p => !p.IsDeleted)
-            .ToListAsync();
+                .AsNoTracking()
+                .Include(p => p.Phones)
+                .Where(p => p.UserId == loggedUserId
+                            && !p.IsDeleted)
+                .ToListAsync();
         }
 
-        public async Task<List<Model.Person>> GetPagedAsync(int pageSize, int pageIndex)
+        public async Task<List<Model.Person>> GetPagedAsync(string loggedUserId, int pageSize, int pageIndex)
         {
             return await _context.Person.AsNoTracking()
                 .Include(p => p.Phones)
-                .Where(p => !p.IsDeleted)
+                .Where(p => p.UserId == loggedUserId
+                            && !p.IsDeleted)
                 .Skip(pageSize * pageIndex)
                 .Take(pageSize)
                 .ToListAsync();
@@ -41,6 +44,13 @@ namespace AgendaLarAPI.Data.Repositories
 
         public async Task<Model.Person?> AddAsync(Model.Person entity)
         {
+            entity.Phones ??= new List<Model.Phone>();
+            foreach (var phone in entity.Phones)
+            {
+                phone.UserId = entity.UserId;
+                phone.PersonId = entity.Id;
+            }
+
             _context.Person.Add(entity);
             await _context.SaveChangesAsync();
             return entity;
@@ -48,6 +58,15 @@ namespace AgendaLarAPI.Data.Repositories
 
         public async Task<Model.Person?> UpdateAsync(Model.Person entity)
         {
+            foreach (var phone in entity.Phones)
+            {
+                phone.UserId = entity.UserId;
+                phone.PersonId = entity.Id;
+
+                if (entity.IsDeleted)
+                    phone.IsDeleted = true;
+            }
+
             _context.Person.Update(entity);
             entity.UpdatedAt = DateTime.UtcNow;
             _context.Entry(entity).Property(p => p.CreatedAt).IsModified = false;

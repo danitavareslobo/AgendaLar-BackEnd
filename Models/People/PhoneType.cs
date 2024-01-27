@@ -1,4 +1,4 @@
-﻿namespace AgendaLarAPI.Models.Person
+﻿namespace AgendaLarAPI.Models.People
 {
     public enum PhoneType
     {

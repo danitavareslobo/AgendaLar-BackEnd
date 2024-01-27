@@ -1,7 +1,7 @@
 ﻿using AgendaLarAPI.Models.Base;
-using AgendaLarAPI.Models.Person.Validators;
+using AgendaLarAPI.Models.People.Validators;
 
-namespace AgendaLarAPI.Models.Person
+namespace AgendaLarAPI.Models.People
 {
     public class Phone : Entity
     {
@@ -12,6 +12,7 @@ namespace AgendaLarAPI.Models.Person
         public Person Person { get; set; }
         public PhoneType Type { get; set; }
         public string Number { get; set; }
+        public User.User User { get; set; }
         public override bool IsValid => Validate();
 
         private bool Validate()

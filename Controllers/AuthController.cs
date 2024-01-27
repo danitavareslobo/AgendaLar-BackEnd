@@ -1,5 +1,5 @@
 ﻿using AgendaLarAPI.Controllers.Base;
-using AgendaLarAPI.Models.User;
+using AgendaLarAPI.Models.User.ViewModels;
 using AgendaLarAPI.Services;
 using AgendaLarAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;

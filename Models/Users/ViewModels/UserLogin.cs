@@ -2,7 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace AgendaLarAPI.Models.User
+namespace AgendaLarAPI.Models.User.ViewModels
 {
     public class UserLogin
     {

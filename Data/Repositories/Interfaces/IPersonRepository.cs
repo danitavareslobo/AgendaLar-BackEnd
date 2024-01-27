@@ -1,4 +1,4 @@
-﻿using Model = AgendaLarAPI.Models.Person;
+﻿using Model = AgendaLarAPI.Models.People;
 
 namespace AgendaLarAPI.Data.Repositories.Interfaces
 {

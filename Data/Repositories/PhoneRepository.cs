@@ -1,6 +1,6 @@
 ﻿using AgendaLarAPI.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Model = AgendaLarAPI.Models.Person;
+using Model = AgendaLarAPI.Models.People;
 
 namespace AgendaLarAPI.Data.Repositories
 {
@@ -29,31 +29,39 @@ namespace AgendaLarAPI.Data.Repositories
             return phone;
         }
 
-        public async Task<Model.Phone> GetByIdAsync(Guid id)
+        public async Task<Model.Phone> GetByIdAsync(string loggedUserId, Guid id)
         {
+            var phone = await _context.Phone.FirstOrDefaultAsync(p => p.UserId == loggedUserId
+                                                                            && p.Id == id);
+
             return await _context.Phone.FindAsync(id) ?? new Model.Phone();
         }
 
-        public async Task<List<Model.Phone>> GetAllAsync()
+        public async Task<List<Model.Phone>> GetAllAsync(string loggedUserId)
         {
-            return await _context.Phone.AsNoTracking().Where(p => !p.IsDeleted).ToListAsync();
+            return await _context.Phone.AsNoTracking()
+                                        .Where(p => p.UserId == loggedUserId
+                                            && !p.IsDeleted)
+                                        .ToListAsync();
         }
 
-        public async Task<List<Model.Phone>> GetPagedAsync(int pageSize, int pageIndex)
+        public async Task<List<Model.Phone>> GetPagedAsync(string loggedUserId, int pageSize, int pageIndex)
         {
             return await _context.Phone
                                     .AsNoTracking()
-                                    .Where(p => !p.IsDeleted)
+                                    .Where(p => p.UserId == loggedUserId
+                                            && !p.IsDeleted)
                                     .Skip(pageSize * pageIndex)
                                     .Take(pageSize)
                                     .ToListAsync();
         }
 
-        public async Task<List<Model.Phone>> GetAllByPersonIdAsync(Guid personId)
+        public async Task<List<Model.Phone>> GetAllByPersonIdAsync(string loggedUserId, Guid personId)
         {
             return await _context.Phone
                 .AsNoTracking()
-                .Where(p => p.PersonId == personId)
+                .Where(p => p.UserId == loggedUserId
+                            && p.PersonId == personId)
                 .ToListAsync();
         }
 

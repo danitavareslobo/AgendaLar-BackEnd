@@ -1,7 +1,7 @@
 ﻿using AgendaLarAPI.Data.Repositories.Interfaces;
 using AgendaLarAPI.Services.Interfaces;
 
-using Model = AgendaLarAPI.Models.Person;
+using Model = AgendaLarAPI.Models.People;
 
 namespace AgendaLarAPI.Services
 {
@@ -18,19 +18,19 @@ namespace AgendaLarAPI.Services
             _notificationService = notificationService;
         }
 
-        public Task<Model.Phone?> GetByIdAsync(Guid id)
+        public Task<Model.Phone?> GetByIdAsync(string loggedUserId, Guid id)
         {
-            return _phoneRepository.GetByIdAsync(id);
+            return _phoneRepository.GetByIdAsync(loggedUserId, id);
         }
 
-        public Task<List<Model.Phone>> GetAllAsync()
+        public Task<List<Model.Phone>> GetAllAsync(string loggedUserId)
         {
-            return _phoneRepository.GetAllAsync();
+            return _phoneRepository.GetAllAsync(loggedUserId);
         }
 
-        public Task<List<Model.Phone>> GetPagedAsync(int pageSize, int pageIndex)
+        public Task<List<Model.Phone>> GetPagedAsync(string loggedUserId, int pageSize, int pageIndex)
         {
-            return _phoneRepository.GetPagedAsync(pageSize, pageIndex);
+            return _phoneRepository.GetPagedAsync(loggedUserId, pageSize, pageIndex);
         }
 
         public async Task<Model.Phone?> AddAsync(Model.Phone entity)
@@ -57,9 +57,9 @@ namespace AgendaLarAPI.Services
             return null;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(string loggedUserId, Guid id)
         {
-            var phone = await _phoneRepository.GetByIdAsync(id);
+            var phone = await _phoneRepository.GetByIdAsync(loggedUserId, id);
 
             if (phone == null)
             {
@@ -74,9 +74,15 @@ namespace AgendaLarAPI.Services
             return result?.IsDeleted ?? false;
         }
 
+        public Task<List<Model.Phone>> GetAllByPersonIdAsync(string loggedUserId, Guid personId)
+        {
+            return _phoneRepository.GetAllByPersonIdAsync(loggedUserId, personId);
+        }
+
         public void Dispose()
         {
             _phoneRepository?.Dispose();
         }
     }
+
 }

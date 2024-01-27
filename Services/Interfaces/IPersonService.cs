@@ -1,8 +1,6 @@
-﻿using Model = AgendaLarAPI.Models.Person;
-
-namespace AgendaLarAPI.Services.Interfaces
+﻿namespace AgendaLarAPI.Services.Interfaces
 {
-    public interface IPersonService : IService<Model.Person>
+    public interface IPersonService : IService<Models.People.Person>
     {
     }
 }

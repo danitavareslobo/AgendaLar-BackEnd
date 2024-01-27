@@ -1,7 +1,7 @@
 ﻿using AgendaLarAPI.Controllers.Base;
 using AgendaLarAPI.Models;
-using AgendaLarAPI.Models.Person;
-using AgendaLarAPI.Models.Person.ViewModels;
+using AgendaLarAPI.Models.People;
+using AgendaLarAPI.Models.People.ViewModels;
 using AgendaLarAPI.Services;
 using AgendaLarAPI.Services.Interfaces;
 using AutoMapper;
@@ -30,37 +30,41 @@ namespace AgendaLarAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return CustomResponse(_mapper.Map<List<PersonResponse>>(await _service.GetAllAsync()));
+            return CustomResponse(_mapper.Map<List<PersonResponse>>(await _service.GetAllAsync(LoggedUserId)));
         }
 
         [HttpGet("paged")]
         public async Task<IActionResult> GetPaged(int pageSize, int pageIndex)
         {
-            return CustomResponse(_mapper.Map<List<PersonResponse>>(await _service.GetPagedAsync(pageSize, pageIndex)));
+            return CustomResponse(_mapper.Map<List<PersonResponse>>(await _service.GetPagedAsync(LoggedUserId, pageSize, pageIndex)));
         }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            return CustomResponse(_mapper.Map<PersonResponse>(await _service.GetByIdAsync(id)));
+            return CustomResponse(_mapper.Map<PersonResponse>(await _service.GetByIdAsync(LoggedUserId, id)));
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(CreatePerson person)
         {
-            return CustomResponse(_mapper.Map<PersonResponse>(await _service.AddAsync(_mapper.Map<Person>(person))));
+            var entity = _mapper.Map<Person>(person);
+            entity.UserId = LoggedUserId;
+            return CustomResponse(_mapper.Map<PersonResponse>(await _service.AddAsync(entity)));
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(Person person)
         {
-            return CustomResponse(_mapper.Map<PersonResponse>(await _service.UpdateAsync(_mapper.Map<Person>(person))));
+            var entity = _mapper.Map<Person>(person);
+            entity.UserId = LoggedUserId;
+            return CustomResponse(_mapper.Map<PersonResponse>(await _service.UpdateAsync(entity)));
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            return CustomResponse(await _service.DeleteAsync(id));
+            return CustomResponse(await _service.DeleteAsync(LoggedUserId, id));
         }
     }
 }

@@ -1,12 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace AgendaLarAPI.Models.Person.ViewModels
+namespace AgendaLarAPI.Models.People.ViewModels
 {
-    public class PersonResponse
+    public class CreatePerson
     {
-        [JsonPropertyName("id")]
-        public Guid Id { get; set; }
-
         [JsonPropertyName("nome")]
         public string Name { get; set; }
 
@@ -19,10 +16,7 @@ namespace AgendaLarAPI.Models.Person.ViewModels
         [JsonPropertyName("dataNascimento")]
         public DateTime BirthDate { get; set; }
 
-        [JsonPropertyName("ativo")]
-        public bool Ativo { get; set; }
-
         [JsonPropertyName("telefones")]
-        public List<UpdatePhone> Phones { get; set; } = new();
+        public List<CreatePhone>? Phones { get; set; } = new List<CreatePhone>();
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace AgendaLarAPI.Services.Interfaces
 {
-    public interface IPhoneService : IService<Models.Person.Phone>
+    public interface IPhoneService : IService<Models.People.Phone>
     {
     }
 }
