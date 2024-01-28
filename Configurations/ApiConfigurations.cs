@@ -19,6 +19,15 @@ namespace AgendaLarAPI.Configurations
             services.ConfigureIdentity(configuration);
             services.RegisterServices();
             services.RegisterRepositories();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
             services.AddProblemDetails(options =>
             {
                 options.CustomizeProblemDetails = (context) =>
@@ -60,6 +69,7 @@ namespace AgendaLarAPI.Configurations
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
+            app.UseCors("AllowAll");
 
             return app;
         }

@@ -1,18 +1,19 @@
 ﻿using AgendaLarAPI.Configurations;
-using AgendaLarAPI.Models.Notification;
-using AgendaLarAPI.Models.User;
+using AgendaLarAPI.Extensions;
 using AgendaLarAPI.Models;
+using AgendaLarAPI.Models.Notification;
+using AgendaLarAPI.Models.People;
+using AgendaLarAPI.Models.User;
+using AgendaLarAPI.Models.User.ViewModels;
 using AgendaLarAPI.Services.Interfaces;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using AgendaLarAPI.Extensions;
-using AgendaLarAPI.Models.User.ViewModels;
-
-using Model = AgendaLarAPI.Models.People;
 
 namespace AgendaLarAPI.Services
 {
@@ -56,7 +57,22 @@ namespace AgendaLarAPI.Services
                 EmailConfirmed = true
             };
 
-            var result = await CreateUserAsync(userRegister, user);
+            var person = new Person
+            {
+                Name = userRegister.Name,
+                Email = userRegister.Email,
+                SocialNumber = userRegister.SocialNumber,
+                BirthDate = DateTime.Now.AddYears(-18),
+                UserId = user.Id
+            };
+
+            if (!person.IsValid)
+            {
+                _notificationService.AddNotifications(person.ValidationResult);
+                return null;
+            }
+
+            var result = await CreateUserAsync(userRegister, user, person);
 
             if (result.Succeeded) return await GenerateJwt(userRegister.Email);
 
@@ -152,7 +168,7 @@ namespace AgendaLarAPI.Services
             return identityClaims;
         }
 
-        private async Task<IdentityResult> CreateUserAsync(UserRegister userRegister, User user)
+        private async Task<IdentityResult> CreateUserAsync(UserRegister userRegister, User user, Person person)
         {
             var result = await _userManager.CreateAsync(user, userRegister.Password);
 
@@ -163,14 +179,7 @@ namespace AgendaLarAPI.Services
                 await _roleManager.CreateAsync(new IdentityRole(AgendaConstants.AdminRole));
 
             await _userManager.AddToRoleAsync(user, AgendaConstants.AdminRole);
-            await _personService.AddAsync(new Model.Person
-            {
-                Name = userRegister.Name,
-                Email = userRegister.Email,
-                SocialNumber = userRegister.SocialNumber,
-                BirthDate = DateTime.Now.AddYears(-18),
-                UserId = user.Id
-            });
+            await _personService.AddAsync(person);
             return result;
         }
 
