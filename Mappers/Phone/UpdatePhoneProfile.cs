@@ -10,8 +10,8 @@ namespace AgendaLarAPI.Mappers.Phone
         public UpdatePhoneProfile()
         {
             CreateMap<UpdatePhone, Model.Phone>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.PersonId, opt => opt.MapFrom(src => src.PersonId))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.Parse(src.Id)))
+                .ForMember(dest => dest.PersonId, opt => opt.MapFrom(src => Guid.Parse(src.PersonId)))
                 .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.Number))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
                 .ForMember(dest => dest.IsValid, src => src.Ignore())

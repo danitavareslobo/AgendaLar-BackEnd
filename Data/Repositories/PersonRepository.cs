@@ -1,5 +1,7 @@
 ﻿using AgendaLarAPI.Data.Repositories.Interfaces;
+
 using Microsoft.EntityFrameworkCore;
+
 using Model = AgendaLarAPI.Models.People;
 
 namespace AgendaLarAPI.Data.Repositories
@@ -16,7 +18,7 @@ namespace AgendaLarAPI.Data.Repositories
         public async Task<Model.Person?> GetByIdAsync(string loggedUserId, Guid id)
         {
             return await _context.Person
-                .Include(p => p.Phones)
+                .Include(p => p.Phones.Where(ph => !ph.IsDeleted))
                 .FirstAsync(p => p.Id.Equals(id)
                                  && p.UserId == loggedUserId);
         }
@@ -25,7 +27,7 @@ namespace AgendaLarAPI.Data.Repositories
         {
             return await _context.Person
                 .AsNoTracking()
-                .Include(p => p.Phones)
+                .Include(p => p.Phones.Where(ph => !ph.IsDeleted))
                 .Where(p => p.UserId == loggedUserId
                             && !p.IsDeleted)
                 .ToListAsync();
@@ -34,7 +36,7 @@ namespace AgendaLarAPI.Data.Repositories
         public async Task<List<Model.Person>> GetPagedAsync(string loggedUserId, int pageSize, int pageIndex)
         {
             return await _context.Person.AsNoTracking()
-                .Include(p => p.Phones)
+                .Include(p => p.Phones.Where(ph => !ph.IsDeleted))
                 .Where(p => p.UserId == loggedUserId
                             && !p.IsDeleted)
                 .Skip(pageSize * pageIndex)
@@ -49,6 +51,7 @@ namespace AgendaLarAPI.Data.Repositories
             {
                 phone.UserId = entity.UserId;
                 phone.PersonId = entity.Id;
+                _context.Add(phone);
             }
 
             _context.Person.Add(entity);
@@ -58,20 +61,39 @@ namespace AgendaLarAPI.Data.Repositories
 
         public async Task<Model.Person?> UpdateAsync(Model.Person entity)
         {
-            foreach (var phone in entity.Phones)
-            {
-                phone.UserId = entity.UserId;
-                phone.PersonId = entity.Id;
+            var originalEntity = await _context.Person
+                .Include(p => p.Phones.Where(ph => !ph.IsDeleted))
+                .FirstOrDefaultAsync(p => p.Id == entity.Id);
 
-                if (entity.IsDeleted)
-                    phone.IsDeleted = true;
+            if (originalEntity == null)
+                return null;
+
+            _context.Entry(originalEntity).CurrentValues.SetValues(entity);
+
+            foreach (var originalPhone in originalEntity.Phones.ToList())
+            {
+                if (!entity.Phones.Any(updatedPhone => updatedPhone.Id == originalPhone.Id))
+                {
+                    _context.Phone.Remove(originalPhone);
+                }
             }
 
-            _context.Person.Update(entity);
-            entity.UpdatedAt = DateTime.UtcNow;
-            _context.Entry(entity).Property(p => p.CreatedAt).IsModified = false;
+            foreach (var updatedPhone in entity.Phones)
+            {
+                var originalPhone = originalEntity.Phones.FirstOrDefault(p => p.Id == updatedPhone.Id);
+
+                updatedPhone.PersonId = entity.Id;
+                updatedPhone.UserId = entity.UserId;
+                if (originalPhone != null)
+                    _context.Entry(originalPhone).CurrentValues.SetValues(updatedPhone);
+                else
+                    originalEntity.Phones.Add(updatedPhone);
+            }
+
+            originalEntity.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
-            return entity;
+
+            return originalEntity;
         }
 
         public void Dispose()

@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 
 namespace AgendaLarAPI.Configurations
 {
@@ -52,7 +53,11 @@ namespace AgendaLarAPI.Configurations
         public static WebApplication UseApiSwagger(this WebApplication app)
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(swaggerOptions =>
+            {
+                swaggerOptions.SwaggerEndpoint("swagger/v1/swagger.json", "Agenda Lar API");
+                swaggerOptions.RoutePrefix = string.Empty;
+            });
 
             return app;
         }

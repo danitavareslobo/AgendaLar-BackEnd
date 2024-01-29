@@ -5,7 +5,7 @@ namespace AgendaLarAPI.Models.People
 {
     public class Phone : Entity
     {
-        public const int NumberMinLength = 20;
+        public const int NumberMinLength = 5;
         public const int NumberMaxLength = 20;
 
         public Guid PersonId { get; set; }

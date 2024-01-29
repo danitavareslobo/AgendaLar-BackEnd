@@ -1,5 +1,9 @@
 ﻿using AgendaLarAPI.Data.Repositories.Interfaces;
+using AgendaLarAPI.Models.People;
 using AgendaLarAPI.Services.Interfaces;
+
+using FluentValidation.Results;
+
 using Model = AgendaLarAPI.Models.People;
 
 namespace AgendaLarAPI.Services
@@ -40,6 +44,24 @@ namespace AgendaLarAPI.Services
                 return null;
             }
 
+            entity.Phones ??= new List<Phone>();
+            if(entity.Phones.Count > 0) 
+            {
+                foreach (var phone in entity.Phones)
+                {
+                    if (!phone.IsValid)
+                    {
+                        var validationResult = new ValidationResult(entity.ValidationResult.Errors.Where(e => e.ErrorCode != nameof(Phone.PersonId)));
+                        
+                        if(validationResult.Errors.Count > 0)
+                            _notificationService.AddNotifications(validationResult);
+                    }
+                }
+
+                if (_notificationService.HasNotifications)
+                    return null;
+            }
+
             var result = await _repository.AddAsync(entity);
 
             if (result == null || result.Id == Guid.Empty)
@@ -50,7 +72,7 @@ namespace AgendaLarAPI.Services
             return result;
         }
 
-        public async Task<Models.People.Person?> UpdateAsync(Models.People.Person entity)
+        public async Task<Person?> UpdateAsync(Person entity)
         {
             if (!entity.IsValid)
             {
@@ -58,11 +80,23 @@ namespace AgendaLarAPI.Services
                 return null;
             }
 
+            if (entity.Phones.Count > 0)
+            {
+                foreach (var phone in entity.Phones)
+                {
+                    if (!phone.IsValid)
+                        _notificationService.AddNotifications(entity.ValidationResult);
+                }
+
+                if (_notificationService.HasNotifications)
+                    return null;
+            }
+
             var result = await _repository.UpdateAsync(entity);
 
             if (result == null || result.Id == Guid.Empty)
             {
-                _notificationService.AddNotification("Pessoa", "Não foi possível adicionar a pessoa");
+                _notificationService.AddNotification("Pessoa", "Não foi possível atualizar a pessoa");
             }
 
             return result;

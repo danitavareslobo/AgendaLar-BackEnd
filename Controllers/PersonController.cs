@@ -54,7 +54,7 @@ namespace AgendaLarAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(Person person)
+        public async Task<IActionResult> Update(UpdatePerson person)
         {
             var entity = _mapper.Map<Person>(person);
             entity.UserId = LoggedUserId;

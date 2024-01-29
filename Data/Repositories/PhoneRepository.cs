@@ -23,6 +23,7 @@ namespace AgendaLarAPI.Data.Repositories
 
         public async Task<Model.Phone> UpdateAsync(Model.Phone phone)
         {
+            _context.Phone.Entry(phone).State = EntityState.Modified;
             _context.Phone.Update(phone);
             await _context.SaveChangesAsync();
 

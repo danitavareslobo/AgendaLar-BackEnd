@@ -44,7 +44,8 @@ namespace AgendaLarAPI.Mappers.Person
 
             list.AddRange(phones.Select(p => new UpdatePhone()
             {
-                Id = p.Id,
+                Id = p.Id.ToString(),
+                PersonId = p.PersonId.ToString(),
                 Number = p.Number,
                 Type = p.Type
             }));
@@ -61,7 +62,7 @@ namespace AgendaLarAPI.Mappers.Person
 
             list.AddRange(phones.Select(p => new Model.Phone()
             {
-                Id = p.Id,
+                Id = Guid.Parse(p.Id),
                 Number = p.Number,
                 Type = p.Type
             }));

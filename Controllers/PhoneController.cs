@@ -3,7 +3,9 @@ using AgendaLarAPI.Models.People;
 using AgendaLarAPI.Models.People.ViewModels;
 using AgendaLarAPI.Services;
 using AgendaLarAPI.Services.Interfaces;
+
 using AutoMapper;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,6 +46,12 @@ namespace AgendaLarAPI.Controllers
             return CustomResponse(_mapper.Map<UpdatePhone>(await _service.GetByIdAsync(LoggedUserId, id)));
         }
 
+        [HttpGet("person/{personId:guid}")]
+        public async Task<IActionResult> GetByPersonId(Guid personId)
+        {
+            return CustomResponse(_mapper.Map<UpdatePhone>(await _service.GetAllByPersonIdAsync(LoggedUserId, personId)));
+        }
+
         [HttpPost]
         public async Task<IActionResult> Add(CreatePhone phone)
         {
@@ -62,10 +70,10 @@ namespace AgendaLarAPI.Controllers
             return CustomResponse(response);
         }
 
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
         {
-            return CustomResponse(await _service.DeleteAsync(LoggedUserId, id));
+            return CustomResponse(await _service.DeleteAsync(LoggedUserId, Guid.Parse(id)));
         }
     }
 

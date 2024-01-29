@@ -54,6 +54,7 @@ namespace AgendaLarAPI.Services
             {
                 UserName = userRegister.Email,
                 Email = userRegister.Email,
+                Name = userRegister.Name,
                 EmailConfirmed = true
             };
 
@@ -128,6 +129,7 @@ namespace AgendaLarAPI.Services
                 {
                     Id = user.Id,
                     Email = user.Email!,
+                    Name = user.Name,
                     Claims = identityClaims.Claims.Select(c => new UserClaim { Type = c.Type, Value = c.Value })
                 }
             };
@@ -156,9 +158,11 @@ namespace AgendaLarAPI.Services
             var roles = await _userManager.GetRolesAsync(user);
             var claims = await _userManager.GetClaimsAsync(user);
 
+
             var identityClaims = new ClaimsIdentity();
             identityClaims.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, user.Id));
             identityClaims.AddClaim(new Claim(JwtRegisteredClaimNames.Email, user.Email!));
+            identityClaims.AddClaim(new Claim(JwtRegisteredClaimNames.Name, user.Name!));
             identityClaims.AddClaim(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
             identityClaims.AddClaims(claims);
 

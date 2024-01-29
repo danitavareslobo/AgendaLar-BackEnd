@@ -10,22 +10,22 @@ namespace AgendaLarAPI.Models.People.ViewModels
         [JsonPropertyName("userId")]
         public string UserId { get; set; }
 
-        [JsonPropertyName("nome")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         [JsonPropertyName("email")]
         public string Email { get; set; }
 
-        [JsonPropertyName("cpf")]
+        [JsonPropertyName("socialNumber")]
         public string SocialNumber { get; set; }
 
-        [JsonPropertyName("dataNascimento")]
+        [JsonPropertyName("birthDate")]
         public DateTime BirthDate { get; set; }
 
         [JsonPropertyName("ativo")]
         public bool Ativo { get; set; }
 
-        [JsonPropertyName("telefones")]
+        [JsonPropertyName("phones")]
         public List<UpdatePhone> Phones { get; set; } = new();
     }
 }
