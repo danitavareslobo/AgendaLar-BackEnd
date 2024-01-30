@@ -74,7 +74,6 @@ namespace AgendaLarAPI.Controllers.Base
 
         protected void NotifyError(string mensagem, string title = "Ocorreu um erro.", NotificationType type = NotificationType.Error)
         {
-            _notificationService.AddNotification(title, mensagem, NotificationType.Error);
             _notificationService.AddNotification(title, mensagem, type);
         }
 
